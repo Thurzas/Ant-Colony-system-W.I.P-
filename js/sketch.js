@@ -74,8 +74,6 @@ function setup() {
   values = createP("noiseScale : " + noiseScale.value() +"   persistance : " +persistance.value() + "   octaves : " +octaves.value()+ "   lacunarity : " +lacunarity.value() + "   Zoffset : "+Zoffset.value() + "   Xoffset : " +Xoffset.value() + "   Yoffset : "+Yoffset.value() + " river's distance from mountain : " + riverRange.value() +"   river deepness" + riverDeepness.value(),"   seed : " + Seed.value());
   setInterval(CountDown,1000);
   setInterval(WorkingProcess,100);
-  var text="mon cul salope de ses morts mange tes mort sale batar.";
-  console.log(text[12]);
 }
 
 function setupForm(){
