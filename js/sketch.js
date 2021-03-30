@@ -154,8 +154,8 @@ function updateParams(data){
   Seed.value(data.Seed);
 }
 function mouseClicked(){
-  if((coords.x<limits.x && coords.y<limits.y) ||( coords.x>0 && coords.y>0))
-    colonies.push(new ColonyFactory(colonies,coords,amap));
+  //if((coords.x<limits.x && coords.y<limits.y) ||( coords.x>0 && coords.y>0))
+  //  colonies.push(new ColonyFactory(colonies,coords,amap));
 }
 function WorldToLocal(){
   coords.x=mouseX;
