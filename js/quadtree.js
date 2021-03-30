@@ -238,7 +238,6 @@ class QuadTree {
     if (!this.divided) {
       this.subdivide();
     }
-
     return (this.northeast.insert(point) || this.northwest.insert(point) ||
       this.southeast.insert(point) || this.southwest.insert(point));
   }

@@ -19,27 +19,21 @@ class Colony{
     this.Queen=new AntFactory(Pos,"Queen");
     this.Queen.Colony=this;
     this.Map=map;
-  }
-
-  SetNode(Coords,Value){
-    var v = new Vector(Math.round(Coords.x/(this.Map.TileData.Size*node.Size)),Math.round(Coords.y/(this.Map.TileData.Size*node.Size)));
-
-    if(this.Map.Contains(v))
-    {
-       var nv=new Vector(Math.round(Coords.x/node.Size)%this.Map.TileData.Size,Math.round(Coords.y/node.Size)%this.Map.TileData.Size);
-       var n = this.Map.TileInfo.Value.GetNode(nv);
-       n.Value=-50;
-    }
-    else {
-      console.log("tile not found");
-    }
+    this.GCD=false;
   }
   Work(){
     this.UpdateMap();
-    for(var i =0; i < this.Ants.length;i++){
-      this.Ants[i].Work();
+    if(this.GCD)
+    {
+      for(var i =0; i < this.Ants.length;i++){
+        this.Ants[i].Work();
+      }
+      this.Queen.Work();
+      this.GCD=false;
     }
-    this.Queen.Work();
+  }
+  resetGCD(){
+    this.GCD=true;
   }
   Display(){
     this.Map.DisplayWithFog();

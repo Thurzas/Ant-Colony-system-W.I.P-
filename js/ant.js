@@ -54,6 +54,10 @@ class Worker extends Ant{
     this.Move();
     //console.log("Ready to Work !");
   }
+
+  From_Nest(){
+
+  }
 }
 class Queen extends Ant{
   constructor(Pos){

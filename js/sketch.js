@@ -9,6 +9,7 @@ var seed = Math.random()*100000;
 //var seed =62956.347558988076; //ocean
 //var seed =60348.07977933963;
 //var seed = 76085.86539404195 ; //BABABA BA BANANA
+var seed =70943.27408597403;
 var canvas;
 var fpsInfo;
 var info;
@@ -20,15 +21,47 @@ var lastLoop = new Date();
 var thisLoop;
 var filler;
 var limits;
+var noiseScale;
+var persistance;
+var octaves;
+var lacunarity;
+var Zoffset;
+var Xoffset;
+var Yoffset;
+var riverRange;
+var riverDeepness;
+var Seed;
+var noiseScaleL;
+var persistanceL;
+var octavesL;
+var lacunarityL;
+var ZoffsetL;
+var XoffsetL;
+var YoffsetL;
+var riverRangeL;
+var riverDeepnessL;
+var SeedL;
+var noiseScaleO;
+var persistanceO;
+var octavesO;
+var lacunarityO;
+var ZoffsetO;
+var XoffsetO;
+var YoffsetO;
+var riverRangeO;
+var riverDeepnessO;
+var SeedO;
+var Min=-1;
+var Max=3;
+
 function setup() {
-  background(51);
   canvas = createCanvas(window.innerWidth, window.innerHeight);
-  amap = new AntMap(32);
+  limits = new Vector(Math.floor(window.innerWidth/(TileInfo.Size*TileInfo.Size)), Math.floor(window.innerHeight/(TileInfo.Size*TileInfo.Size)));
+  amap = new AntMap(new Rectangle(0,0,limits.x,limits.y),TileInfo.Size);
   coords=new Vector(0,0);
   local= new Vector(0,0);
-  new ColonyFactory(colonies,coords,amap);
-  console.log(Tile.Size);
-  limits = new Vector(Math.round(window.innerWidth/(Tile.Size*node.Size)), Math.round(window.innerHeight/(Tile.Size*node.Size)));
+  amap.TileInfo.Seed=seed;
+  console.log(amap.TileInfo.Seed);
   filler = new Filler(amap);
   timer = createP("time : ");
   tiles = createP("tiles : " + amap.Tiles.length);
@@ -37,22 +70,100 @@ function setup() {
   info2 = createP("local : ");
   fpsInfo = createP("fps :");
   tick=0;
-  amap.TileData.Seed=seed;
-  console.log(amap.TileData.Seed);
+  setupForm();
+  values = createP("noiseScale : " + noiseScale.value() +"   persistance : " +persistance.value() + "   octaves : " +octaves.value()+ "   lacunarity : " +lacunarity.value() + "   Zoffset : "+Zoffset.value() + "   Xoffset : " +Xoffset.value() + "   Yoffset : "+Yoffset.value() + " river's distance from mountain : " + riverRange.value() +"   river deepness" + riverDeepness.value(),"   seed : " + Seed.value());
   setInterval(CountDown,1000);
   setInterval(WorkingProcess,100);
-  console.log(limits);
+  var text="mon cul salope de ses morts mange tes mort sale batar.";
+  console.log(text[12]);
 }
 
+function setupForm(){
+  setForm();
+  noiseScale.input(OnChange);
+  persistance.input(OnChange);
+  octaves.input(OnChange);
+  lacunarity.input(OnChange)
+  Zoffset.input(OnChange);
+  Xoffset.input(OnChange);
+  Yoffset.input(OnChange);
+  riverRange.input(OnChange);
+  riverDeepness.input(OnChange);
+  Seed.input(OnChange);
+}
+function setForm(){
+  var Data=amap.TileInfo;
+  noiseScaleO = select('#noiseScaleO');
+  persistanceO  = select('#persistanceO');
+  octavesO  = select('#octavesO');
+  lacunarityO  = select('#lacunarityO');
+  ZoffsetO  = select('#ZoffsetO');
+  XoffsetO  = select('#XoffsetO');
+  YoffsetO = select('#YoffsetO');
+  riverRangeO   = select('#riverRangeO');
+  riverDeepnessO   = select('#riverDeepnessO');
+  noiseScaleL = select('#noiseScaleL');
+  persistanceL  = select('#persistanceL');
+  octavesL  = select('#octavesL');
+  lacunarityL  = select('#lacunarityL');
+  ZoffsetL  = select('#ZoffsetL');
+  XoffsetL  = select('#XoffsetL');
+  YoffsetL = select('#YoffsetL');
+  riverRangeL   = select('#riverRangeL');
+  riverDeepnessL   = select('#riverDeepnessL');
+  SeedL  = select('#seedL');
+
+  noiseScale = select('#noiseScale');
+  persistance  = select('#persistance');
+  octaves  = select('#octaves');
+  lacunarity  = select('#lacunarity');
+  Zoffset  = select('#Zoffset');
+  Xoffset  = select('#Xoffset');
+  Yoffset = select('#Yoffset');
+  riverRange   = select('#riverRange');
+  riverDeepness   = select('#riverDeepness');
+  Seed  = select('#seed');
+  console.log(riverRange)
+  updateParams(Data);
+}
+function OnChange(){
+  amap.Tiles=new Array();
+  amap.TileInfo=new TileInfo(noiseScale.value(),persistance.value(),octaves.value(),lacunarity.value(),Max,Min,Zoffset.value(),Xoffset.value(),Yoffset.value(),riverRange.value(),riverDeepness.value() ,Seed.value());
+  updateParams(amap.TileInfo);
+  values.html("");
+  values.html("noiseScale : " + noiseScale.value() +"   persistance : " +persistance.value() + "   octaves : " +octaves.value()+ "   lacunarity : " +lacunarity.value() + "   Zoffset : "+Zoffset.value() + "   Xoffset : " +Xoffset.value() + "   Yoffset : "+Yoffset.value() + " river's distance from mountain : " + riverRange.value() +"   river deepness" + riverDeepness.value(),"   seed : " + Seed.value());
+  filler=new Filler(amap);
+}
+function updateParams(data){
+  noiseScaleO.html(" " + data.noiseScale);
+  persistanceO.html(" "+data.persistance);
+  octavesO.html(" "+data.octaves);
+  lacunarityO.html(" "+data.lacunarity);
+  ZoffsetO.html(" "+data.ZOffset);
+  XoffsetO.html(" "+data.XOffset);
+  YoffsetO.html(" "+data.YOffset);
+  riverRangeO.html(" "+data.riverRange);
+  riverDeepnessO.html(" "+data.riverDeepness);
+  noiseScale.value(data.noiseScale);
+  persistance.value(data.persistance);
+  octaves.value(data.octaves);
+  lacunarity.value(data.lacunarity);
+  Zoffset.value(data.ZOffset);
+  Xoffset.value(data.XOffset);
+  Yoffset.value(data.YOffset);
+  riverRange.value(data.riverRange);
+  riverDeepness.value(data.riverDeepness);
+  Seed.value(data.Seed);
+}
 function mouseClicked(){
-  console.log(amap);
-  colonies.push(new ColonyFactory(colonies,coords,amap));
+  if((coords.x<limits.x && coords.y<limits.y) ||( coords.x>0 && coords.y>0))
+    colonies.push(new ColonyFactory(colonies,coords,amap));
 }
 function WorldToLocal(){
   coords.x=mouseX;
   coords.y=mouseY;
-  local.x = Math.round(coords.x/(node.Size))
-  local.y = Math.round(coords.y/(node.Size));
+  local.x = Math.floor(coords.x/(TileInfo.Size))
+  local.y = Math.floor(coords.y/(TileInfo.Size));
   info.html("coords : " + coords)
   info2.html("local : " + local);
 }
@@ -71,20 +182,28 @@ function CountDown()
 
 function WorkingProcess(){
   for(var i =0; i<colonies.length;i++){
-    colonies[i].Work();
+    colonies[i].resetGCD();
   }
 }
 
 function getFPS(){
   var thisLoop = new Date();
-  fps=Math.round(1000 / (thisLoop - lastLoop));
+  fps=Math.floor(1000 / (thisLoop - lastLoop));
   fpsInfo.html("fps : " +  fps) ;
   lastLoop = thisLoop;
 }
 function draw()
 {
-  //clear();
-  amap.UpdateFrom(coords);
+  //  clear();
+  filler.work();
+  for(var i =0; i<colonies.length;i++){
+    colonies[i].Work();
+  }
+  if((coords.x<limits.x && coords.y<limits.y) ||( coords.x>0 && coords.y>0))
+      amap.UpdateFrom(coords);
+
+
+  amap.DisplayWithFog();
   for(var i =0; i<colonies.length;i++){
     colonies[i].Display();
   }
@@ -99,109 +218,5 @@ class state {
   }
   Update(){
 
-  }
-}
-class Vector{
-  constructor(x,y){
-    this.x=x;
-    this.y=y;
-  }
-  toString()
-  {
-    return " ( "+ this.x + " , "+ this.y + " )";
-  }
-}
-
-class Bound
-{
-  constructor(Pos, Size){
-    this.V = Pos;
-    this.Size = Size;
-  }
-  Collide(other,Size){
-    var distance = Math.sqrt((this.V.x - other.V.x) * (this.V.x - other.V.x) +
-                             (this.V.y - other.V.y) * (this.V.y - other.V.y));
-    return distance < (this.Size + Size);
-  }
-
-  Draw(){
-    stroke("rgb(125,0,0)");
-    circle(this.V.x,this.V.y,this.Size);
-  }
-}
-
-class node
-{
-  static Size=10;
-  constructor(Pos,value){
-    this.V=Pos;
-    this.Value=value;
-    this.Walkable=true;
-    this.Food=false;
-    this.FoodValue=0;
-  }
-  Draw(){
-    //stroke("rbg(255,255,255)");
-    noStroke();
-    var water = 0.01;
-    var sand = 0.1
-    var grass = 0.4;
-    var tree = 0.7;
-    var boulder = 1;
-    var snow = 1.3;
-    if(this.Value===-50)
-    {
-      fill("rgb(255,0,0)");
-      this.Walkable=false;
-    }
-    else if(this.Value>=0 && this.Value < water)
-    {
-      fill("rgb(2,179,231)");
-      this.Walkable=false;
-    }
-    else if(this.Value>=water && this.Value<=sand)
-    {
-      fill("rgb(225,228,92)");
-
-    }
-    else if(this.Value>sand && this.Value<=grass)
-    {
-      fill("rgb(133,223,0)");
-    }
-    else if(this.Value> grass && this.Value<=tree)
-    {
-      fill("rgb(0,198,0)");
-      this.Food=true;
-      this.FoodValue=10;
-    }
-    else if(this.Value> tree && this.Value<boulder ) {
-      fill("rgb(120,128,128)");
-      this.Walkable=false;
-    }
-    else if(this.Value>=boulder && this.Value<snow)
-    {
-      fill("rgb(155,155,155)");
-      this.Walkable=false;
-    }
-    else if(this.Value>=snow)
-    {
-      fill("rgb(255,255,255)");
-      this.Walkable=false;
-    }
-    square(this.V.x,this.V.y,node.Size);
-    }
-}
-class Filler{
-  constructor(amap){
-    this.cursor=new Vector(0,0);
-    this.Map=amap;
-    for(var i =0; i<limits.x; i++){
-      for(var j = 0; j<limits.y; j++)
-      {
-        this.cursor.y = ( limits.y - j)*Tile.Size*node.Size;
-        this.Map.UpdateFrom(this.cursor);
-      }
-        this.cursor.x = ( limits.x - i)*Tile.Size*node.Size;
-    }
   }
 }
