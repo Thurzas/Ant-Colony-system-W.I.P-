@@ -125,7 +125,7 @@ function setForm(){
   updateParams(Data);
 }
 function OnChange(){
-  amap.Tiles=new Array();
+  amap.Reload();
   amap.TileInfo=new TileInfo(noiseScale.value(),persistance.value(),octaves.value(),lacunarity.value(),Max,Min,Zoffset.value(),Xoffset.value(),Yoffset.value(),riverRange.value(),riverDeepness.value() ,Seed.value());
   updateParams(amap.TileInfo);
   values.html("");

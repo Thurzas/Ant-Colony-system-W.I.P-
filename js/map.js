@@ -8,6 +8,10 @@ class AntMap
     this.LastUpdate= new Array();
     this.TileBox=new TileBox(this.TileInfo);
     this.Layer=new Array();
+    this.Rectangle=Rectangle;
+  }
+  Reload(){
+    this.Tiles=new QuadTree(this.Rectangle,1);
   }
   Contains(Pos)
   {
